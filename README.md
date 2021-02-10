@@ -1,5 +1,4 @@
-# SistemaFabio-2.0
- http://fabiopasseios.hopto.org/novoSistema/index.php
+# GERENCIAMENTO DE EMPRESA DE TURISMO
 
 
 ## FUNCIONALIDADES PRINCIPAIS
