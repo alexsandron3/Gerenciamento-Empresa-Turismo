@@ -1,5 +1,6 @@
 # GERENCIAMENTO DE EMPRESA DE TURISMO
-
+Entre em contato para solicitar um teste.
+alexsandro060299@outlook.com
 
 ## FUNCIONALIDADES PRINCIPAIS
 
