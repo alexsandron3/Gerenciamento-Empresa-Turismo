@@ -1,0 +1,88 @@
+CREATE TABLE CLIENTE (
+	idCliente INT NOT NULL AUTO_INCREMENT,
+	nomeCliente VARCHAR(200),
+	emailCliente VARCHAR(200),
+    rgCliente VARCHAR(200),
+    orgaoEmissor VARCHAR(200),
+    cpfCliente VARCHAR(200),
+	telefoneCliente VARCHAR(200),
+    dataNascimento DATE,
+    idadeCliente INT,
+    seguroViagem BOOLEAN,
+	valorSeguroViagem FLOAT,
+    transporte VARCHAR(200),
+    referencia VARCHAR(200),
+    pessoaContato VARCHAR(200),
+    telefoneContato VARCHAR(200),
+    cpfConsultado VARCHAR(200),
+    dataCpfConsultado DATE,
+	valorVendido INT,
+	valorPago INT,
+	previsaoPagamento DATE,
+	statusPagamento VARCHAR (200),
+	created DATE,
+	modified DATETIME,
+	sinalCliente INT,
+    redeSocial VARCHAR(200),
+    PRIMARY KEY (idCliente)
+);    
+
+CREATE TABLE PASSEIO (
+	idPasseio INT NOT NULL AUTO_INCREMENT,
+	nomePasseio VARCHAR(200),
+	localPasseio VARCHAR(200),
+	valorPasseio FLOAT,
+	dataPasseio DATE,
+	quantidadeCliente INT,
+	idCliente INT,
+    anotacoes VARCHAR(200),
+	FOREIGN KEY (idCliente) REFERENCES CLIENTE(idCliente),
+	PRIMARY KEY (idPasseio)
+	
+);
+
+CREATE TABLE DESPESA_PASSEIO (
+	idDespesa INT NOT NULL AUTO_INCREMENT,
+	despesaTotal FLOAT,
+	lucroLiquido FLOAT,
+	valorIngresso FLOAT,
+	valorOnibus FLOAT,
+	valorMicro FLOAT,
+	valorVan FLOAT,
+	valorEscuna FLOAT,
+	valorSeguroViagem FLOAT,
+	valorAlmocoCliente FLOAT,
+	valorAlmocoMotorista FLOAT,
+	valorEstacionamento FLOAT,
+	valorGuia FLOAT,
+	valorAutorizacaoTransporte FLOAT,
+	valorTaxi FLOAT,
+	valorKitLanche FLOAT,
+	valorMarketing FLOAT,
+	valorImpulsionamento FLOAT,
+	outros FLOAT,
+	totalDespesas FLOAT,
+	idPasseio INT,
+	PRIMARY KEY (idDespesa),
+	FOREIGN KEY (idPasseio) REFERENCES PASSEIO (idPasseio)
+)
+
+
+CREATE TABLE PAGAMENTO_PASSEIO (
+	idPagamento  INT NOT NULL AUTO_INCREMENT,
+	idCliente INT,
+	idPasseio INT,
+	valorPago FLOAT,
+	valorVendido FLOAT,
+	previsaoPagamento DATE,
+	sinalCliente FLOAT,
+	valorPendente FLOAT,
+	statusPagamento FLOAT,
+	PRIMARY KEY (idPagamento),
+	FOREIGN KEY (idCliente) REFERENCES CLIENTE(idCliente),
+	FOREIGN KEY (idPasseio) REFERENCES PASSEIO(idPasseio)
+
+
+
+
+)
