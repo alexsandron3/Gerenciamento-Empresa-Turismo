@@ -1,7 +1,10 @@
 # GERENCIAMENTO DE EMPRESA DE TURISMO
-Entre em contato para solicitar um teste.
+Entre em contato para mais informações detalhadas sobre o sistema.
 alexsandro060299@outlook.com
 
+##Prévia do sistema
+  http://alexsandroxavier.sytes.net/novosistema/login.php
+  ### CLIQUE NO LINK "REGISTRE-SE AGORA" E EM SEGUIDA LOGUE NO SISTEMA
 
 ## BREVE RESUMO:
   #### Este sistema foi projetado e está sendo desenvolido para uma agência de turismos. Foi entendido que os processos deles eram feitos INTEIRAMENTE por EXCEL, o que não era prático, poderia causar redundâncias e até informações erradas.
