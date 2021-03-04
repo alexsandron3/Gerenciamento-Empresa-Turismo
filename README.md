@@ -3,7 +3,7 @@ Entre em contato para mais informações detalhadas sobre o sistema.
 alexsandro060299@outlook.com
 
 ##Prévia do sistema
-  http://alexsandroxavier.sytes.net/novosistema/login.php
+  http://alexsandroxavier.sytes.net/portfolio/login.php
   ### CLIQUE NO LINK "REGISTRE-SE AGORA" E EM SEGUIDA LOGUE NO SISTEMA
 
 ## BREVE RESUMO:
