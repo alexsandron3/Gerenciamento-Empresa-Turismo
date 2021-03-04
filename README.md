@@ -2,15 +2,41 @@
 Entre em contato para solicitar um teste.
 alexsandro060299@outlook.com
 
-## FUNCIONALIDADES PRINCIPAIS
 
-- [X] CADASTRAR, PESQUISAR, EDITAR E DESATIVAR CLIENTES <a href="#010"> V0.1.0 </a>
-- [X] CADASTRAR, PESQUISAR, EDITAR E <a href="#TIP1"> DELETAR* </a> PASSEIOS  <a href="#010"> V0.1.0 </a>
-- [X] CADASTRAR, PESQUISAR, EDITAR DESPESAS <a href="#010"> V0.1.0 </a>
-- [X] CADASTRAR, PESQUISAR, EDITAR, TRANSFERIR E APAGAR PAGAMENTOS <p> <a href="#010"> V0.1.0 </a>
-- [X] CRIAR LISTA DE PASSEIO <a href="#010"> V0.1.0</a>
-- [X] EXPORTAR SEGURO VIAGEM COMO EXCEL <a href="#010"> V0.1.0</a>
-- [X] DELETAR PAGAMENTOS <a href="#010"> V0.1.0</a>
+## BREVE RESUMO:
+  #### Este sistema foi projetado e está sendo desenvolido para uma agência de turismos. Foi entendido que os processos deles eram feitos INTEIRAMENTE por EXCEL, o que não era prático, poderia causar redundâncias e até informações erradas.
+  ### ETAPA 0
+  #### O sistema veio com a intenção de agilizar os processos dessa empresa. Foram feitas análises nos PDFs usados por eles e então criadas as funcionalidades.
+  ### ETAPA 1
+       A primeira a etapa foi criar/automatizar o que eles já tinham, então foi criado um sistema de gerenciamento de USUÁRIOS e PAGAMENTOS, PASSEIOS e suas DESPESAS.
+  ###  ETAPA 2
+       Após isso foram criados sistemas de controle. Por exemplo não é possível cadastrar um cliente com mesmo NOME  e CPF, assim como não é possível cadastrar um passeio com mesmo NOME e DATA DE REALIZAÇÃO. 
+       Você pode conferir todos os ALERTAS na opção ALERTAS . 
+  ### ETAPA 3
+      Na etapa 3 foi iniciada a criação de relatórios. Então foi criada uma parte de relatórios financeiros, e outra parte de relatórios como  PONTOS DE EMBARQUE, LISTA DE PASSAGEIROS, PAGAMENTOS PENDENTES e SEGURO VIAGEM, sendo possível exportar todos esses para EXCEL.
+  ### ETAPA 4
+    Já na etapa 4 foi criada a parte de LOG do sistema, onde apenas usuários a partir de um NÍVEL DE ACESSO poderiam acessar essa parte, o log mostra todas operações feitas no sistema, sejam elas sucedidas ou não, detalhando também as informações da operação. Juntamente foram criados os níveis de acesso, onde existem usuários com poder de alteração e visualização completa, usuários com poder de alteração completa e usuários somente com poder de visualização, sem poder acessar ou alterar qualquer informação cadastrada no  banco de dados.
+  
+  #### Mais funcionalidades serão adicionadas como você poderá ver com detalhes em <a href="funcionalidadesPrevistas"> Funcionalidades Previstas <a>
+  #### As Funcionalidades já prontas, você poderá ver com detalhes em <a href="funcionalidadesPrincipais"> Funcionalidades Principais </a>
+  #### Os erros conhecidos e não corrigidos poderão ser vistos em <a href="bugs"> Bugs </a>
+
+
+
+
+
+
+
+
+
+## FUNCIONALIDADES PRINCIPAIS
+  * ## OPERAÇÕES BÁSICAS 
+- [X] CADASTRAR, PESQUISAR, EDITAR E DESATIVAR CLIENTES 
+- [X] CADASTRAR, PESQUISAR, EDITAR E <a href="#TIP1"> DELETAR* </a> PASSEIOS  
+- [X] CADASTRAR, PESQUISAR E EDITAR DESPESAS 
+- [X] CADASTRAR, PESQUISAR, EDITAR, TRANSFERIR E APAGAR PAGAMENTOS <p> 
+- [X] CRIAR LISTA DE PASSEIO 
+- [X] EXPORTAR SEGURO VIAGEM COMO EXCEL 
 
 
 ## FUNCIONALIDADES SECUNDÁRIAS
