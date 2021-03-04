@@ -1,7 +1,7 @@
 <?php
-  session_start();
-  include_once("PHP/conexao.php");
-  include_once("PHP/functions.php");
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("./includes/header.php");
+	
 /* -----------------------------------------------------------------------------------------------------  */
   $idPasseioGet   = filter_input(INPUT_GET, 'id',            FILTER_SANITIZE_NUMBER_INT);
   $ordemPesquisa  = filter_input(INPUT_GET, 'ordemPesquisa', FILTER_SANITIZE_STRING);
@@ -11,7 +11,7 @@
 /* -----------------------------------------------------------------------------------------------------  */
 
   $queryBuscaPeloIdPasseio = "SELECT  p.nomePasseio, p.idPasseio, c.nomeCliente, c.rgCliente, c.orgaoEmissor, c.idadeCliente, c.idCliente, c.dataNascimento, pp.idPagamento, pp.valorPago  
-                              FROM passeio p, pagamento_passeio pp, cliente c WHERE pp.idPasseio='$idPasseioGet' AND pp.idPasseio=p.idPasseio AND pp.idCliente=c.idCliente ORDER BY $ordemPesquisa ";
+                              FROM passeio p, pagamento_passeio pp, cliente c WHERE pp.idPasseio='$idPasseioGet' AND pp.idPasseio=p.idPasseio AND pp.idCliente=c.idCliente AND pp.statusPagamento NOT IN(0) ORDER BY $ordemPesquisa ";
                           $resultadoBuscaPasseio = mysqli_query($conexao, $queryBuscaPeloIdPasseio);
 /* -----------------------------------------------------------------------------------------------------  */
  
@@ -31,17 +31,8 @@
 <html lang="PT-BR">
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PÁGINA DE CONTROLE DE CLIENTES DO FINANCEIRO">
-  <link rel="stylesheet" href="config/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
-    integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous"></script>
+<?php include_once("./includes/head.php");?>
+
   
   <title>LISTA DE PASSAGEIROS </title>
 </head>
@@ -68,19 +59,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="pesquisarCliente.php">CLIENTE</a>
             <a class="dropdown-item" href="pesquisarPasseio.php">PASSEIO</a>
-            <!-- <a class="dropdown-item" href="cadastroDespesas.php">DESPESAS</a> -->
           </div>
-        </li>
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            LISTAGEM
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="">CLIENTE</a>
-            <a class="dropdown-item" href="">PASSEIO</a>
-            <a class="dropdown-item" href="">PAGAMENTO</a>
-          </div> -->
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle " href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -92,6 +71,9 @@
             <a class="dropdown-item" href="cadastroPasseio.php">PASSEIO</a>
             <a class="dropdown-item" href="cadastroDespesas.php">DESPESAS</a>
           </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="logout.php" >SAIR </a>
         </li>
       </ul>
     </div>
@@ -111,8 +93,7 @@
                 <th>  <a href="listaClientes.php?id=<?php echo$idPasseioGet;?>&ordemPesquisa=idadeCliente">IDADE </a></th>
                 <th> <a href="listaClientes.php?id=<?php echo$idPasseioGet;?>&ordemPesquisa=rgCliente">Nº IDENTIDADE </a></th>
                 <th> <a href="listaClientes.php?id=<?php echo$idPasseioGet;?>&ordemPesquisa=orgaoEmissor">ORGÃO EMISSOR</a></th>
-<!--                 <th> AÇÃO</th>
- -->            </tr>
+            </tr>
           </thead>
         
         <tbody>
@@ -146,9 +127,8 @@
                }else{
                 $opcao = "TRANSFERIR";
                  }
-              ?>
-<!--             <th> <a target="blank" href="SCRIPTS/apagarPagamento.php?idPagamento=<?php #echo $idPagamento;?>&idPasseio= <?php #echo $idPasseioAcao; ?>&opcao=<?php #echo $opcao ?>&confirmar=0"> <?php #echo $opcao?> </a> </th>
- -->          </tr>
+              ?>      
+          </tr>
 
           <?php
           
@@ -174,7 +154,8 @@
 
 
       ?>
-       
+      <a target="_blank" href="SCRIPTS/exportarPassageiros.php?id=<?php echo $idPasseioGet?>" class="btn btn-info ml-5">EXPORTAR</a>
+
   </div>
 <script src="config/script.php"></script>
 </body>

@@ -81,6 +81,8 @@ $("#hexTextBox").inputFilter(function(value) {
     return /^-?\d*[.]?\d{0,2}$/.test(value); });
     $("#valorImpulsionamento").inputFilter(function(value) {
     return /^-?\d*[.]?\d{0,2}$/.test(value); });
+    $("#valorPulseira").inputFilter(function(value) {
+    return /^-?\d*[.]?\d{0,2}$/.test(value); });
     $("#outros").inputFilter(function(value) {
     return /^-?\d*[.]?\d{0,2}$/.test(value); });
     $("#valorVendido").inputFilter(function(value) {
@@ -95,6 +97,8 @@ $("#hexTextBox").inputFilter(function(value) {
     return /^-?\d*[.]?\d{0,2}$/.test(value); });
     $("#novoValorPago").inputFilter(function(value) {
     return /^-?\d*[.]?\d{0,2}$/.test(value); });
+    $("#novoValorPago").inputFilter(function(value) {
+    return /^-?\d*[.]?\d{0,2}$/.test(value); });
     
   //INT
   $("#quantidadeIngresso").inputFilter(function(value) {
@@ -106,6 +110,8 @@ $("#hexTextBox").inputFilter(function(value) {
   $("#quantidadeVan").inputFilter(function(value) {
   return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 200); });
   $("#quantidadeEscuna").inputFilter(function(value) {
+  return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 200); });
+  $("#quantidadeSeguroViagem").inputFilter(function(value) {
   return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 200); });
   $("#quantidadeAlmocoCliente").inputFilter(function(value) {
   return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 200); });
@@ -124,6 +130,8 @@ $("#hexTextBox").inputFilter(function(value) {
   $("#quantidadeKitLanche").inputFilter(function(value) {
   return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 200); });
   $("#quantidadeImpulsionamento").inputFilter(function(value) {
+  return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 200); });
+  $("#quantidadePulseira").inputFilter(function(value) {
   return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 200); });
 
 
@@ -260,6 +268,13 @@ function calculoTotalDespesas(){
     valorTotalImpulsionamento                                = quantidadeImpulsionamento * valorImpulsionamento;
     document.getElementById('valorTotalImpulsionamento').value = valorTotalImpulsionamento.toFixed(2);
 
+    var valorPulseira                                         = document.getElementById('valorPulseira').value;
+    valorPulseira                                             = parseFloat(valorPulseira);
+    document.getElementById('valorPulseira').value            = valorPulseira.toFixed(2);
+    var quantidadePulseira                                    = document.getElementById('quantidadePulseira').value;    
+    valorTotalPulseira                                        = quantidadePulseira *valorPulseira;
+    document.getElementById('valorTotalPulseira').value       = valorTotalPulseira.toFixed(2);
+
     var valorSeguroViagem                                    = document.getElementById('valorSeguroViagem').value;
     valorSeguroViagem                                        = parseFloat(valorSeguroViagem);
     document.getElementById('valorSeguroViagem').value       = valorSeguroViagem.toFixed(2);
@@ -277,7 +292,7 @@ function calculoTotalDespesas(){
     var valorTotal                  = Number(valorIngresso) * Number(quantidadeIngresso)  + Number(valorOnibus) * Number(quantidadeOnibus) + Number(valorMicro) * Number(quantidadeMicro) + Number(valorVan) * Number(quantidadeVan) + Number(valorEscuna) * Number(quantidadeEscuna) + Number(valorSeguroViagem) * Number(quantidadeSeguroViagem)
                                     + Number(valorAlmocoCliente) * Number(quantidadeAlmocoCliente) + Number(valorAlmocoMotorista) * Number(quantidadeAlmocoMotorista) + Number(valorEstacionamento) * Number(quantidadeEstacionamento) + Number(valorGuia) * Number(quantidadeGuia) 
                                     + Number(valorAutorizacaoTransporte) * Number(quantidadeAutorizacaoTransporte) + Number(valorTaxi) * Number(quantidadeTaxi) + Number(valorMarketing) * Number(quantidadeMarketing)  + Number(valorImpulsionamento) * Number(quantidadeImpulsionamento) 
-                                    + Number(outros)  + Number(valorKitLanche) * Number(quantidadeKitLanche);
+                                    + Number(valorPulseira) * Number(quantidadePulseira) + Number(outros)  + Number(valorKitLanche) * Number(quantidadeKitLanche);
    console.log(valorTotal);
    if(valorTotal) {
        document.getElementById('totalDespesas').value = valorTotal.toFixed(2);
@@ -433,6 +448,12 @@ function verificaDataPasseio(){
 function confirmationDelete(anchor)
 {
    var conf = confirm('VOCÊ TEM CERTEZA QUE DESEJA DESATIVAR ESTE CLIENTE??');
+   if(conf)
+      window.location=anchor.attr("href");
+}
+function confirmationDeletePasseio(anchor)
+{
+   var conf = confirm('VOCÊ TEM CERTEZA QUE DESEJA APAGAR ESSE PASSEIO??');
    if(conf)
       window.location=anchor.attr("href");
 }

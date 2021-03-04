@@ -1,75 +1,15 @@
 <?php
-  session_start();
-  include_once("PHP/conexao.php");
-  #<pre>";
-  $idPasseio = 1;
-
-
-  $recebeLotacaoPasseio    = "SELECT lotacao, nomePasseio, dataPasseio FROM passeio WHERE idPasseio='$idPasseio'";
-  $resultadoLotacaoPasseio = mysqli_query($conexao, $recebeLotacaoPasseio);
-  $rowLotacaoPasseio       = mysqli_fetch_assoc($resultadoLotacaoPasseio);
-  $lotacaoPasseio          = $rowLotacaoPasseio['lotacao']; 
-  $nomePasseio          = $rowLotacaoPasseio['nomePasseio']; 
-  $dataPasseio          = $rowLotacaoPasseio['dataPasseio']; 
-
-  $getStatusPagamento       = "SELECT statusPagamento AS qtdConfirmados FROM pagamento_passeio WHERE idPasseio=$idPasseio AND statusPagamento NOT IN (0,4)";
-  $resultadoStatusPagamento = mysqli_query($conexao, $getStatusPagamento);
-  $qtdClientesConfirmados   = mysqli_num_rows($resultadoStatusPagamento);
-
-  $getStatusPagamentoCliente       = "SELECT statusPagamento FROM pagamento_passeio WHERE idPasseio=$idPasseio";
-  $resultadoStatusPagamentoCliente = mysqli_query($conexao, $getStatusPagamentoCliente);
-  $interessado = 0;
-  $quitado = 0;
-  $parcial = 0;
-  $parceiro = 0;
-  $crianca = 0;
-  while($rowGetStatusPagamentoCliente = mysqli_fetch_assoc($resultadoStatusPagamentoCliente)){
-    $statusCliente = $rowGetStatusPagamentoCliente['statusPagamento'];
-    if($statusCliente == 0){
-      $interessado +=1;
-    }elseif($statusCliente == 1){
-      $quitado +=1;
-    }elseif($statusCliente == 2){
-      $parcial +=1;
-    }elseif($statusCliente == 3){
-      $parceiro +=1;
-    }elseif($statusCliente == 4){
-      $crianca +=1;
-    }
-
-  }
-
-
-
-
-  $vagasRestantes = ($lotacaoPasseio - $qtdClientesConfirmados);
-
-
-/*   echo "PASSEIO: ".$nomePasseio. "\n";
-  echo "DATA: ".$dataPasseio. "\n";
-  echo "INTERESSADO: ".$interessado. "\n";
-  echo "QUITADO: ".$quitado. "\n";
-  echo "RESERVADOS: ".$parcial. "\n";
-  echo "PARCEIRO: ".$parceiro. "\n";
-  echo "CRIANÇAS: ".$crianca. "\n";
-  echo "META DE VENDA: ".$lotacaoPasseio. "\n";
-  echo "VAGAS DISPONÍVEIS: : ".$vagasRestantes. "\n"; */
-
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("./includes/header.php");
+	
 ?>
 
 <!DOCTYPE html>
 <html lang="PT-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
-    integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous"></script>
+<?php include_once("./includes/head.php");?>
+
   <title>INÍCIO</title>
 </head>
 
@@ -98,17 +38,6 @@
             <!-- <a class="dropdown-item" href="cadastroDespesas.php">DESPESAS</a> -->
           </div>
         </li>
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            LISTAGEM
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="">CLIENTE</a>
-            <a class="dropdown-item" href="">PASSEIO</a>
-            <a class="dropdown-item" href="">PAGAMENTO</a>
-          </div> -->
-        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle " href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
@@ -119,6 +48,9 @@
             <a class="dropdown-item" href="cadastroPasseio.php">PASSEIO</a>
             <a class="dropdown-item" href="cadastroDespesas.php">DESPESAS</a>
           </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="logout.php" >SAIR </a>
         </li>
       </ul>
     </div>
@@ -131,15 +63,20 @@
   ?>
 
 
-   <!-- <p class='h4 text-center alert-info'> SELECIONE O INTERVALO</p> -->
     <form action='' method='GET' autocomplete='OFF'>
       <div class='form-group row mb-5 mt-5'>
         <label class='col-sm-2 col-form-label' for='inicioDataPasseio'></label>
-        <input type='date' class='form-control col-sm-2' name='inicioDataPasseio' id='inicioDataPasseio' value="<?php echo date("Y-m-d");?>">
+        <input type='date' class='form-control col-sm-2' name='inicioDataPasseio' id='inicioDataPasseio' value="">
 
         <label class='col-sm-2 col-form-label  pl-5' for='fimDataPasseio'>PERÍODO</label>
-        <input type='date' class='form-control col-sm-2' name='fimDataPasseio' id='fimDataPasseio' value="<?php echo date("2030-m-d");?>" >
-        <input type='submit' class='btn btn-primary btn-sm ml-5' value='CARREGAR INFORMAÇÕES' name='buttonEviaDataPasseio' >
+        <input type='date' class='form-control col-sm-2' name='fimDataPasseio' id='fimDataPasseio' value="" >
+        <input type='submit' class='btn btn-primary btn-sm ml-5 ' value='CARREGAR INFORMAÇÕES' name='buttonEviaDataPasseio' >
+        <div class="form-check mt-2 col-12">
+          <input class="form-check-input col-1 ml-1" type="checkbox" name="mostrarPasseiosExcluidos"value="1" id="mostrarPasseiosExcluidos">
+          <label class="form-check-label  col-3 ml-5 pl-5" for="mostrarPasseiosExcluidos" >
+          EXIBE PASSEIOS ENCERRADOS
+          </label>
+        </div>
       </div>
     </form>
   <div class="table-responsive">
@@ -158,19 +95,31 @@
       </thead>
       <?php
         /* -----------------------------------------------------------------------------------------------------  */
-        $buttonEviaDataPasseio = filter_input(INPUT_GET, 'buttonEviaDataPasseio', FILTER_SANITIZE_STRING);
-        $inicioDataPasseio     = filter_input(INPUT_GET, 'inicioDataPasseio', FILTER_SANITIZE_STRING);
-        $fimDataPasseio        = filter_input(INPUT_GET, 'fimDataPasseio', FILTER_SANITIZE_STRING);
+        $buttonEviaDataPasseio    = filter_input(INPUT_GET, 'buttonEviaDataPasseio', FILTER_SANITIZE_STRING);
+        $inicioDataPasseio        = filter_input(INPUT_GET, 'inicioDataPasseio', FILTER_SANITIZE_STRING);
+        $fimDataPasseio           = filter_input(INPUT_GET, 'fimDataPasseio', FILTER_SANITIZE_STRING);
+        $mostrarPasseiosExcluidos = filter_input(INPUT_GET, 'mostrarPasseiosExcluidos', FILTER_VALIDATE_BOOLEAN);
         $inicioDataPasseioFormatado = date_create($inicioDataPasseio);
         $fimDataPasseioFormatado = date_create($fimDataPasseio);
-        if(empty($inicioDataPasseio)OR empty($fimDataPasseio)){
-          echo"<p class='h4 text-center alert-warning'> PERÍODO SELECIONADO INVÁLIDO</p>";  
+        $exibePasseio = (empty($mostrarPasseiosExcluidos) OR is_null($mostrarPasseiosExcluidos)) ? false: true;
+        $queryExibePasseio = ($exibePasseio == false)? 'AND statusPasseio NOT IN (0)' : ' ';
+        $mensagemExibeExcluidos = ($exibePasseio == true)? 'EXBINDO PASSEIOS ENCERRADOS': ' EXIBINDO SOMENTE PASSEIOS ATIVOS';
+        if($buttonEviaDataPasseio){
+          if(empty($inicioDataPasseio)OR empty($fimDataPasseio)){
+            echo"<p class='h4 text-center alert-warning'>  RELATÓRIO DE VENDAS <br/>". "PERÍODO SELECIONADO INVÁLIDO</p>";  
+          }else{
+            echo"<p class='h4 text-center alert-info'>  RELATÓRIO DE VENDAS <br/>". "PERÍODO SELECIONADO:  ".date_format($inicioDataPasseioFormatado, "d/m/Y") ." => ".date_format($fimDataPasseioFormatado, "d/m/Y") ." 
+            <a target='_blank'href='listaRelatorioPasseios.php?inicioDataPasseio=".$inicioDataPasseio."&fimDataPasseio=".$fimDataPasseio."&mostrarPasseiosExcluidos=".$mostrarPasseiosExcluidos."'> *</a></br>
+            " .$mensagemExibeExcluidos.  "
+            
+            </p>";
+          }
         }else{
-          echo"<p class='h4 text-center alert-warning'> PERÍODO SELECIONADO:  ".date_format($inicioDataPasseioFormatado, "d/m/Y") ." => ".date_format($fimDataPasseioFormatado, "d/m/Y") ." <a target='_blank'href='listaRelatorioPasseios.php?inicioDataPasseio=".$inicioDataPasseio."&fimDataPasseio=".$fimDataPasseio."'> *</a></p>";
+          echo"<p class='h4 text-center alert-info'>  RELATÓRIO DE VENDAS <br/></p>";  
+
         }
       /* -----------------------------------------------------------------------------------------------------  */
-    $listaPasseios = "SELECT idPasseio FROM passeio WHERE dataPasseio BETWEEN '$inicioDataPasseio' AND '$fimDataPasseio'";
-    #echo$listaPasseios;
+    $listaPasseios = "SELECT idPasseio, dataPasseio FROM passeio WHERE dataPasseio BETWEEN '$inicioDataPasseio' AND '$fimDataPasseio' $queryExibePasseio ORDER BY dataPasseio";
     $resultadoListaPasseio = mysqli_query($conexao, $listaPasseios);
 
     while($rowResultadoListaPasseio = mysqli_fetch_assoc($resultadoListaPasseio)){
@@ -230,7 +179,6 @@
         }
       }
       $recebeLotacaoPasseio    = "SELECT lotacao, nomePasseio, dataPasseio FROM passeio WHERE idPasseio='$idPasseio'";
-      #echo$recebeLotacaoPasseio;
       $resultadoLotacaoPasseio = mysqli_query($conexao, $recebeLotacaoPasseio);
       $rowLotacaoPasseio       = mysqli_fetch_assoc($resultadoLotacaoPasseio);
       $lotacaoPasseio          = $rowLotacaoPasseio['lotacao']; 

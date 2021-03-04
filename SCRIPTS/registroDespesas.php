@@ -1,7 +1,8 @@
 <?php
-    session_start();
-    include_once("../PHP/functions.php");
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("../includes/header.php");
     
+    //RECEBENDO E VALIDANDO VALORES
     $idPasseio                       = filter_input(INPUT_POST, 'idPasseioSelecionado',             FILTER_SANITIZE_NUMBER_INT);
     $valorIngresso                   = filter_input(INPUT_POST, 'valorIngresso',                    FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $valorOnibus                     = filter_input(INPUT_POST, 'valorOnibus',                      FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -18,6 +19,7 @@
     $valorKitLanche                  = filter_input(INPUT_POST, 'valorKitLanche',                   FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $valorMarketing                  = filter_input(INPUT_POST, 'valorMarketing',                   FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $valorImpulsionamento            = filter_input(INPUT_POST, 'valorImpulsionamento',             FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $valorPulseira                   = filter_input(INPUT_POST, 'valorPulseira',                    FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $outros                          = filter_input(INPUT_POST, 'outros',                           FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $totalDespesas                   = filter_input(INPUT_POST, 'totalDespesas',                    FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     $quantidadeIngresso              = filter_input(INPUT_POST, 'quantidadeIngresso',               FILTER_SANITIZE_NUMBER_INT);
@@ -34,23 +36,29 @@
     $quantidadeMarketing             = filter_input(INPUT_POST, 'quantidadeMarketing',              FILTER_SANITIZE_NUMBER_INT);
     $quantidadeKitLanche             = filter_input(INPUT_POST, 'quantidadeKitLanche',              FILTER_SANITIZE_NUMBER_INT);
     $quantidadeImpulsionamento       = filter_input(INPUT_POST, 'quantidadeImpulsionamento',        FILTER_SANITIZE_NUMBER_INT);
+    $quantidadePulseira              = filter_input(INPUT_POST, 'quantidadePulseira',               FILTER_SANITIZE_NUMBER_INT);
     $quantidadeSeguroViagem          = filter_input(INPUT_POST, 'quantidadeSeguroViagem',           FILTER_SANITIZE_NUMBER_INT);
+    $nomePasseio                     = filter_input(INPUT_POST, 'nomePasseio',                      FILTER_SANITIZE_STRING);
+    $dataPasseio                     = filter_input(INPUT_POST, 'dataPasseio',                      FILTER_SANITIZE_STRING);
+    $idUser                          = $_SESSION['id'];
 
 
     /* -----------------------------------------------------------------------------------------------------  */
 
-    $getData = "INSERT INTO 
-    despesa (valorIngresso, valorOnibus, valorMicro, valorVan, valorEscuna, valorSeguroViagem, valorAlmocoCliente, valorAlmocoMotorista, valorEstacionamento, valorGuia, valorAutorizacaoTransporte,
-             valorTaxi, valorKitLanche, valorMarketing, valorImpulsionamento, outros, idPasseio,  quantidadeIngresso ,quantidadeOnibus, quantidadeMicro, quantidadeEscuna, quantidadeAlmocoCliente, 
-             quantidadeAlmocoMotorista, quantidadeEstacionamento, quantidadeGuia, quantidadeAutorizacaoTransporte, quantidadeTaxi, quantidadeMarketing, quantidadeKitLanche, quantidadeImpulsionamento, quantidadeVan, quantidadeSeguroViagem, totalDespesas)
-    VALUES   ('$valorIngresso', '$valorOnibus', '$valorMicro', '$valorVan', '$valorEscuna',  '$valorSeguroViagem', '$valorAlmocoCliente', '$valorAlmocoMotorista', 
-            '$valorEstacionamento', '$valorGuia', '$valorAutorizacaoTransporte', '$valorTaxi', '$valorKitLanche', '$valorMarketing', '$valorImpulsionamento', '$outros', '$idPasseio',
-            '$quantidadeIngresso' ,'$quantidadeOnibus', '$quantidadeMicro', '$quantidadeEscuna', '$quantidadeAlmocoCliente', '$quantidadeAlmocoMotorista', '$quantidadeEstacionamento', '$quantidadeGuia', 
-            '$quantidadeAutorizacaoTransporte', '$quantidadeTaxi', '$quantidadeMarketing', '$quantidadeKitLanche', '$quantidadeImpulsionamento','$quantidadeVan', '$quantidadeSeguroViagem', '$totalDespesas')
-            ";
+    $queryCadastraDespesas = "INSERT INTO 
+                            despesa (valorIngresso, valorOnibus, valorMicro, valorVan, valorEscuna, valorSeguroViagem, valorAlmocoCliente, valorAlmocoMotorista, valorEstacionamento, valorGuia, valorAutorizacaoTransporte,
+                                    valorTaxi, valorKitLanche, valorMarketing, valorImpulsionamento, valorPulseira, outros, idPasseio,  quantidadeIngresso ,quantidadeOnibus, quantidadeMicro, quantidadeEscuna, quantidadeAlmocoCliente, 
+                                    quantidadeAlmocoMotorista, quantidadeEstacionamento, quantidadeGuia, quantidadeAutorizacaoTransporte, quantidadeTaxi, quantidadeMarketing, quantidadeKitLanche, quantidadeImpulsionamento, quantidadePulseira ,quantidadeVan, quantidadeSeguroViagem, totalDespesas)
+                            VALUES   ('$valorIngresso', '$valorOnibus', '$valorMicro', '$valorVan', '$valorEscuna',  '$valorSeguroViagem', '$valorAlmocoCliente', '$valorAlmocoMotorista', 
+                                    '$valorEstacionamento', '$valorGuia', '$valorAutorizacaoTransporte', '$valorTaxi', '$valorKitLanche', '$valorMarketing', '$valorImpulsionamento', '$valorPulseira','$outros', '$idPasseio',
+                                    '$quantidadeIngresso' ,'$quantidadeOnibus', '$quantidadeMicro', '$quantidadeEscuna', '$quantidadeAlmocoCliente', '$quantidadeAlmocoMotorista', '$quantidadeEstacionamento', '$quantidadeGuia', 
+                                    '$quantidadeAutorizacaoTransporte', '$quantidadeTaxi', '$quantidadeMarketing', '$quantidadeKitLanche', '$quantidadeImpulsionamento','$quantidadePulseira' ,'$quantidadeVan', '$quantidadeSeguroViagem', '$totalDespesas')
+                                    ";
 
     /* -----------------------------------------------------------------------------------------------------  */
-    cadastro($getData, $conexao, "DESPESAS", "cadastroDespesas");
+    //CADASTRANDO E GERANDO LOG
+    cadastro($queryCadastraDespesas, $conexao, "DESPESAS", "cadastroDespesas");
+    gerarLog("DESPESAS", $conexao, $idUser, null, $nomePasseio, $dataPasseio, null, "CADASTRAR" , 0);
 
 
 ?>

@@ -1,6 +1,7 @@
 <?php
-    session_start();
-    include_once("PHP/conexao.php");
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("./includes/header.php");
+	
 /* -----------------------------------------------------------------------------------------------------  */
     $idClienteGet = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 /* -----------------------------------------------------------------------------------------------------  */
@@ -13,16 +14,8 @@
 <html lang="PT-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="config/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
-    integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous"></script>
+<?php include_once("./includes/head.php");?>
+
   <title>EDITAR CLIENTE</title>
 </head>
 
@@ -49,19 +42,7 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="pesquisarCliente.php">CLIENTE</a>
             <a class="dropdown-item" href="pesquisarPasseio.php">PASSEIO</a>
-            <!-- <a class="dropdown-item" href="cadastroDespesas.php">DESPESAS</a> -->
           </div>
-          <!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            LISTAGEM
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="">CLIENTE</a>
-            <a class="dropdown-item" href="">PASSEIO</a>
-            <a class="dropdown-item" href="">PAGAMENTO</a>
-          </div> -->
-        </li>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle " href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -73,6 +54,9 @@
             <a class="dropdown-item" href="cadastroPasseio.php">PASSEIO</a>
             <a class="dropdown-item" href="cadastroDespesas.php">DESPESAS</a>
           </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="logout.php" >SAIR </a>
         </li>
       </ul>
     </div>
@@ -115,6 +99,7 @@
             <option value="DETRAN">DETRAN</option>
             <option value="IFP"> IFP</option>
             <option value="OAB">OAB</option>
+            <option value="CERTIDAO NASCIMENTO">CERTIDAO NASCIMENTO</option>
             <option value="SSP">SSP</option>
             <option value="DIC">DIC</option>
             <option value="MDMB">MDMB</option>
@@ -130,6 +115,7 @@
             <option value="SSP/PB"> SSP/PB</option>
             <option value="CNH">CNH</option>
             <option value="MTPS">MTPS</option>
+            <option value="PMERJ">PMERJ</option>
           </select>
         </div>
         <div class="form-group row">
@@ -276,7 +262,6 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">FECHAR</button>
-                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
               </div>
             </div>
           </div>

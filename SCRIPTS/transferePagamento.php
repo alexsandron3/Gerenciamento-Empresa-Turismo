@@ -1,28 +1,27 @@
 <?php
-    session_start();
-    include_once("../PHP/functions.php");
-    include_once("../PHP/conexao.php");
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("../includes/header.php");
 
+    //RECEBENDO E VALIDANDO VALORES
     $idPasseioSelecionado   = filter_input(INPUT_POST, 'idPasseioSelecionado', FILTER_SANITIZE_NUMBER_INT);
     $idPasseioAntigo        = filter_input(INPUT_POST, 'idPasseioAntigo',      FILTER_SANITIZE_NUMBER_INT);
     $idPagamentoAntigo      = filter_input(INPUT_POST, 'idPagamentoAntigo',    FILTER_SANITIZE_NUMBER_INT);
-    
-    /* echo $idPasseioSelecionado;
-    echo $idPasseioAntigo;
-    echo $idPagamentoAntigo; */
+    $idUser                 = $_SESSION['id'];
 
+	/* -----------------------------------------------------------------------------------------------------  */
+    //BUSCANDO INFORMACOES NECESSÁRIAS DO PASSEIO ANTIGO    
     $getDataPagamentoAntigo = "SELECT DISTINCT pp.idPagamento, pp.idCliente, pp.idPasseio, pp.valorPago, pp.valorVendido, pp.previsaoPagamento, pp.valorPendente, pp.statusPagamento, pp.seguroViagem, pp.clienteParceiro, 
-                                pp.transporte, pp.anotacoes, pp.historicoPagamento, pp.SeguroViagem, pp.taxaPagamento, pp.localEmbarque, pp.statusPagamento, p.idPasseio ,c.idCliente, c.dataNascimento
+                                pp.transporte, pp.anotacoes, pp.historicoPagamento, pp.SeguroViagem, pp.taxaPagamento, pp.localEmbarque, pp.statusPagamento, p.idPasseio, p.nomePasseio, p.dataPasseio, c.idCliente, c.dataNascimento, c.nome
                                 FROM pagamento_passeio pp, passeio p, cliente c 
                                 WHERE pp.idPasseio=$idPasseioAntigo AND pp.idPagamento=$idPagamentoAntigo AND pp.idPasseio=p.idPasseio AND pp.idCliente=c.idCliente";
-                                #echo$getDataPagamentoAntigo;
                                 $resultadoPagamentoAntigo = mysqli_query($conexao, $getDataPagamentoAntigo);
                                 $rowPagamentoAntigo = mysqli_fetch_assoc($resultadoPagamentoAntigo);
+
     $getDataIdadeIsencaoPagamentoAntigo = "SELECT idadeIsencao FROM passeio WHERE idPasseio=$idPasseioSelecionado";
                                             $resultadIdadeIsencaoPagamentoAntigo = mysqli_query($conexao, $getDataIdadeIsencaoPagamentoAntigo);
                                             $rowIdadeIsencaoPagamentoAntigo = mysqli_fetch_assoc($resultadIdadeIsencaoPagamentoAntigo);
-    
-    $idadeIsencao = $rowIdadeIsencaoPagamentoAntigo['idadeIsencao'];                                           
+    $idadeIsencao                = $rowIdadeIsencaoPagamentoAntigo['idadeIsencao'];
+                                               
     $valorVendido                = $rowPagamentoAntigo['valorVendido'] ;
     $valorPago                   = $rowPagamentoAntigo['valorPago'];
     $previsaoPagamento           = $rowPagamentoAntigo['previsaoPagamento'];
@@ -36,6 +35,9 @@
     $historicoPagamento          = $rowPagamentoAntigo['historicoPagamento'];
     $idCliente                   = $rowPagamentoAntigo['idCliente'];
     $data                        = $rowPagamentoAntigo['dataNascimento'];
+    $nomeCliente                 = $rowPagamentoAntigo['nomeCliente'];
+    $nomePasseio                 = $rowPagamentoAntigo['nomePasseio'];
+    $dataPasseio                 = $rowPagamentoAntigo['dataPasseio'];
 
     /* -----------------------------------------------------------------------------------------------------  */
 
@@ -73,14 +75,15 @@
     /* -----------------------------------------------------------------------------------------------------  */
 
     
-    $alerta = $lotacaoPasseio * 0.80;
+    $alerta = $lotacaoPasseio * 0.20;
     $vagasRestantes = ($lotacaoPasseio - $qtdClientesConfirmados) -1;
     if($lotacaoPasseio <= $qtdClientesConfirmados){
         $_SESSION['msg'] = "<p class='h5 text-center alert-danger'>LIMITE DE VAGAS PARA ESTE PASSEIO ATINGIDO</p>";
         header("refresh:0.5; url=../pagamentoCliente.php?id=$idCliente");
+        gerarLog("PAGAMENTO", $conexao, $idUser, $nomeCliente, $nomePasseio, $dataPasseio, $valorPago, "TRANSFERIR" , 0);
     }elseif($lotacaoPasseio > $qtdClientesConfirmados){
         $insertDataPagamentoPasseio = mysqli_query($conexao, $getDataPagamentoPasseio);
-
+        
         if(mysqli_insert_id($conexao)){
             if($qtdClientesConfirmados+1 >= $lotacaoPasseio){
                 $getDataApaga = "DELETE FROM pagamento_passeio WHERE idPagamento ='$idPagamentoAntigo' AND idPasseio='$idPasseioAntigo'";
@@ -92,17 +95,23 @@
                 ; 
                 $_SESSION['msg'] = "<p class='h5 text-center alert-success'>PAGAMENTO realizado com sucesso.</p>";
                 header("refresh:0.5; url=../pagamentoCliente.php?id=$idCliente");
+                gerarLog("PAGAMENTO", $conexao, $idUser, $nomeCliente, $nomePasseio, $dataPasseio, $valorPago, "TRANSFERIR" , 0);
+
             }else{
                 $getDataApaga = "DELETE FROM pagamento_passeio WHERE idPagamento ='$idPagamentoAntigo' AND idPasseio='$idPasseioAntigo'";
 
                 apagar($getDataApaga, $conexao, "PAGAMENTO", $idPagamentoAntigo, $idPagamentoAntigo, "index");
                 $_SESSION['msg'] = "<p class='h5 text-center alert-success'>PAGAMENTO realizado com sucesso</p>";
                 header("refresh:0.5; url=../pagamentoCliente.php?id=$idCliente");
+                gerarLog("PAGAMENTO", $conexao, $idUser, $nomeCliente, $nomePasseio, $dataPasseio, $valorPago, "TRANSFERIR" , 0);
+
             }
 
         }else{
             $_SESSION['msg'] = "<p class='h5 text-center alert-danger'>PAGAMENTO NÃO REALIZADO </p>";
             header("refresh:0.5; url=../pagamentoCliente.php?id=$idCliente");
+            gerarLog("PAGAMENTO", $conexao, $idUser, $nomeCliente, $nomePasseio, $dataPasseio, $valorPago, "TRANSFERIR" , 0);
+
         }
         if($vagasRestantes > 0 and $vagasRestantes <= floor($alerta)){
             if($statusPagamento == 0 OR $statusPagamento == 4){

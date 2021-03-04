@@ -1,21 +1,17 @@
 <?php
-    session_start();
-    include_once("PHP/conexao.php");
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("./includes/header.php");
+	
     $idPasseioGet = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_FLOAT);
     $queryBuscaDespesa = "SELECT DISTINCT d.valorIngresso, d.valorOnibus, d.valorMicro, d.valorVan, d.valorEscuna, d.valorAlmocoCliente, d.valorAlmocoMotorista, d.valorEstacionamento, d.valorGuia, d.valorAutorizacaoTransporte,
-                          d.valorTaxi, d.valorKitLanche, d.valorMarketing, d.valorImpulsionamento, d.valorSeguroViagem , d.outros, d.idPasseio,  d.idDespesa, d.quantidadeIngresso, d.quantidadeOnibus, d.quantidadeMicro, d.quantidadeVan, d.quantidadeEscuna,
-                          d.quantidadeAlmocoCliente, d.quantidadeAlmocoMotorista, d.quantidadeEstacionamento, d.quantidadeGuia, d.quantidadeAutorizacaoTransporte, d.quantidadeTaxi, d.quantidadeKitLanche, d.quantidadeMarketing, d.quantidadeImpulsionamento, d.quantidadeSeguroViagem,                     
+                          d.valorTaxi, d.valorKitLanche, d.valorMarketing, d.valorImpulsionamento, d.valorPulseira, d.valorSeguroViagem , d.outros, d.idPasseio,  d.idDespesa, d.quantidadeIngresso, d.quantidadeOnibus, d.quantidadeMicro, d.quantidadeVan, d.quantidadeEscuna,
+                          d.quantidadeAlmocoCliente, d.quantidadeAlmocoMotorista, d.quantidadeEstacionamento, d.quantidadeGuia, d.quantidadeAutorizacaoTransporte, d.quantidadeTaxi, d.quantidadeKitLanche, d.quantidadeMarketing, d.quantidadeImpulsionamento, d.quantidadePulseira, d.quantidadeSeguroViagem,                     
                           p.nomePasseio, p.dataPasseio   
                           FROM despesa d, passeio p WHERE d.idpasseio='$idPasseioGet' AND d.idPasseio=p.idPasseio";
                           $resultadoBuscaDespesa = mysqli_query($conexao, $queryBuscaDespesa);
                           $rowDespesa = mysqli_fetch_assoc($resultadoBuscaDespesa);
                           $dataPasseio =  date_create($rowDespesa['dataPasseio']);
 /* -----------------------------------------------------------------------------------------------------  */
-
-/*     $queryValorSeguroViagem     = "SELECT FORMAT(SUM(valorSeguroViagemCliente), 2) AS totalSeguroViagem FROM pagamento_passeio WHERE idPasseio=$idPasseioGet";
-                                  $resultadoValorSeguroViagem = mysqli_query($conexao, $queryValorSeguroViagem);
-                                  $rowValorSeguroViagem       = mysqli_fetch_assoc($resultadoValorSeguroViagem);
-                                  $valorTotalSeguroViagem     = $rowValorSeguroViagem ['totalSeguroViagem']; */
 
 /* -----------------------------------------------------------------------------------------------------  */
     if(!empty($idPasseioGet)){
@@ -35,16 +31,8 @@
 <html lang="PT-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="config/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
-    integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous"></script>
+<?php include_once("./includes/head.php");?>
+
   <title>ATUALIZAR DESPESAS</title>
 </head>
 
@@ -72,17 +60,6 @@
             <a class="dropdown-item" href="pesquisarCliente.php">CLIENTE</a>
             <a class="dropdown-item" href="pesquisarPasseio.php">PASSEIO</a>
           </div>
-          <!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            LISTAGEM
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="">CLIENTE</a>
-            <a class="dropdown-item" href="">PASSEIO</a>
-            <a class="dropdown-item" href="">PAGAMENTO</a>
-          </div> -->
-        </li>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -94,6 +71,9 @@
             <a class="dropdown-item" href="cadastroPasseio.php">PASSEIO</a>
             <a class="dropdown-item active" href="cadastroDespesas.php">DESPESAS</a>
           </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="logout.php" >SAIR </a>
         </li>
       </ul>
     </div>
@@ -291,7 +271,6 @@
                 echo"<input type='text' readonly class='form-control col-sm-8' name='valorTotalKitLanche' id='valorTotalKitLanche' placeholder='TOTAL'  value='0' onblur='calculoTotalDespesas()'>";
               echo"</div>";
             echo"</div>";
-
             echo"<div class='form-group row'>";
               echo"<label class='col-sm-2 col-form-label' for='valorImpulsionamento'>IMPULSIONAMENTO</label>";
               echo"<div class='col-sm-6'>";
@@ -303,6 +282,19 @@
               echo"<div class='col-sm-2'>";
                 echo"<input type='text' readonly class='form-control col-sm-8' name='valorTotalImpulsionamento' id='valorTotalImpulsionamento' placeholder='TOTAL'  value='0' onblur='calculoTotalDespesas()'>";
               echo"</div>";  
+            echo"</div>";
+
+            echo"<div class='form-group row'>";
+              echo"<label class='col-sm-2 col-form-label' for='valorPulseira'>PULSEIRAS</label>";
+              echo"<div class='col-sm-6'>";
+                echo"<input type='text' class='form-control' name='valorPulseira' id='valorPulseira' placeholder='PULSEIRA' value='". $rowDespesa ['valorPulseira']."'onchange='calculoTotalDespesas()'>";
+              echo"</div>";
+              echo"<div class='col-sm-1'>";
+                echo"<input type='text' class='form-control' name='quantidadePulseira' id='quantidadePulseira' placeholder='QTD' value='". $rowDespesa ['quantidadePulseira']."'onchange='calculoTotalDespesas()'>";
+              echo"</div>";
+              echo"<div class='col-sm-2'>";
+                echo"<input type='text' readonly class='form-control col-sm-8' name='valorTotalPulseira' id='valorTotalPulseira' placeholder='TOTAL'  value='0' onchange='calculoTotalDespesas()'>";
+              echo"</div>";
             echo"</div>";
 
             echo"<div class='form-group row'>";
@@ -323,6 +315,8 @@
           ?>
         <input type="hidden" class="form-control col-sm-1 ml-3" name="idPasseioSelecionado" id="idPasseioSelecionado" value="<?php echo $rowDespesa ['idPasseio']?>">
         <input type="hidden" class="form-control col-sm-1 ml-3" name="idDespesa" id="idDespesa" value="<?php echo $rowDespesa ['idDespesa']?>">
+        <input type="hidden" class="form-control col-sm-1 ml-3" name="nomePassseio" id="nomePasseio" value="<?php echo  $rowDespesa['nomePasseio']?>">
+        <input type="hidden" class="form-control col-sm-1 ml-3" name="dataPasseio" id="dataPasseio" value="<?php echo $rowDespesa['dataPasseio']?>">
          
       </form>
   </div>

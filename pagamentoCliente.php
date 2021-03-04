@@ -1,6 +1,7 @@
 <?php
-    session_start();
-    include_once("PHP/conexao.php");
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("./includes/header.php");
+	
 /* -----------------------------------------------------------------------------------------------------  */
     $idCliente = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 /* -----------------------------------------------------------------------------------------------------  */
@@ -8,22 +9,14 @@
                                 $resultadoIdCliente = mysqli_query($conexao, $queryBuscaIdCliente);
                                 $rowIdCliente = mysqli_fetch_assoc($resultadoIdCliente);
 /* -----------------------------------------------------------------------------------------------------  */
-
+$idadeCliente = calcularIdade($idCliente, $conn, "");
 ?>
 <!DOCTYPE html>
 <html lang="PT-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="config/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
-    integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous"></script>
+<?php include_once("./includes/head.php");?>
+
   <title>PAGAMENTO</title>
 </head>
 
@@ -52,17 +45,6 @@
             <a class="dropdown-item" href="pesquisarPasseio.php">PASSEIO</a>
           </div>
         </li>
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            LISTAGEM
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="">CLIENTE</a>
-            <a class="dropdown-item" href="">PASSEIO</a>
-            <a class="dropdown-item" href="">PAGAMENTO</a>
-          </div> -->
-        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle " href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
@@ -73,6 +55,9 @@
             <a class="dropdown-item" href="cadastroPasseio.php">PASSEIO</a>
             <a class="dropdown-item" href="cadastroDespesas.php">DESPESAS</a>
           </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="logout.php" >SAIR </a>
         </li>
       </ul>
     </div>
@@ -105,11 +90,13 @@
           <?php
             
             if($idCliente > 0){  
-              $resultadoBuscaNomePasseio = "SELECT * FROM passeio ORDER BY dataPasseio";
+              $resultadoBuscaNomePasseio = "SELECT nomePasseio, dataPasseio, idPasseio FROM passeio WHERE statusPasseio NOT IN(0) ORDER BY  dataPasseio";
               $resultadoNomePasseio = mysqli_query($conexao, $resultadoBuscaNomePasseio);
               while($rowNomePasseio = mysqli_fetch_assoc($resultadoNomePasseio)){
+                $dataPasseio = (empty($rowNomePasseio['dataPasseio']) OR $rowNomePasseio == "0000-00-00")? "": date_create($rowNomePasseio['dataPasseio']);
+                $dataPasseioFormatada = (empty($dataPasseio) OR  $dataPasseio == "0000-00-00")? "": date_format($dataPasseio, "d/m/Y"); 
                 ?>
-                <option value="<?php echo $rowNomePasseio ['idPasseio'] ;?>"><?php echo $rowNomePasseio ['nomePasseio']; echo " "; echo $rowNomePasseio ['dataPasseio'];?>  </option>    
+                <option value="<?php echo $rowNomePasseio ['idPasseio'] ;?>"><?php echo $rowNomePasseio ['nomePasseio']; echo " "; echo $dataPasseioFormatada;?>  </option>    
             <?php }
             }
           ?>
@@ -143,12 +130,12 @@
                   if(mysqli_num_rows($resultadoqueryBuscaSeJaExistePagamento) == 0 ){
 /* -----------------------------------------------------------------------------------------------------  */
                     $verificaSeExisteDespesa = "SELECT d.idPasseio, p.idPasseio FROM despesa d, passeio p WHERE d.idPasseio=p.idPasseio AND d.idPasseio='$idPasseioSelecionado'";
-                    #echo $verificaSeExisteDespesa;
                                                 $resultadoVerificaSeExisteDespesa = mysqli_query($conexao, $verificaSeExisteDespesa);
 /* -----------------------------------------------------------------------------------------------------  */
                     if(mysqli_num_rows($resultadoVerificaSeExisteDespesa) !=0){
-                      //echo"<p class='text-center alert-success'>SUCESSO, ESTE CLIENTE AINDA NÃO FEZ UMA COMPRA NESSE PASSEIO </p>";  
-                      echo"<p class='h4 text-center alert-info'>PASSEIO: ". $rowPasseioSelecionado ['nomePasseio']. " ".$rowPasseioSelecionado ['dataPasseio'] ."</p>";
+                      $dataPasseioSelecionado = (empty($rowPasseioSelecionado['dataPasseio']) OR $rowPasseioSelecionado == "0000-00-00")? "": date_create($rowPasseioSelecionado['dataPasseio']);
+                      $dataPasseioSelecionadoPadrao = (empty($dataPasseioSelecionado) OR  $dataPasseioSelecionado == "0000-00-00")? "": date_format($dataPasseioSelecionado, "d/m/Y");   
+                      echo"<p class='h4 text-center alert-info'>PASSEIO: ". $rowPasseioSelecionado ['nomePasseio']. " ".$dataPasseioSelecionadoPadrao ."</p>";
                       echo"<div class='form-group row'>";
                         echo"<label class='col-sm-2 col-form-label' for='valorVendido'>VALOR VENDIDO</label>";
                         echo"<div class='col-sm-6'>";
@@ -192,14 +179,18 @@
                       echo"";
                       echo"<div class='form-group row'>";
                         echo"<label class='col-sm-2 col-form-label' for='meioTransporte'>TRANSPORTE</label>";
-                        echo"<select class='form-control col-sm-3 ml-3' name='meioTransporte' id='meioTransporte'>";
-                          echo"<option value='' selected> SELECIONAR</option>";
-                          echo"<option value='CARRO'>CARRO</option>";
-                          echo"<option value='ONIBUS'>ÔNIBUS</option>";
-                          echo"<option value='MICRO'>MICRO</option>";
-                          echo"<option value='VAN'>VAN</option>";
-                        echo"</select>";
+                        echo"<div class='col-sm-3'>";
+                          echo"<input type='text' class='form-control' name='meioTransporte' id='meioTransporte' placeholder='TRANSPORTE' autocomplete='on'>";
+                        echo"</div>";
                       echo"</div>";
+                      echo"";
+                      echo"<div class='form-group row'>";
+                        echo"<label class='col-sm-2 col-form-label' for='idadeCliente'>IDADE</label>";
+                        echo"<div class='col-sm-1'>";
+                          echo"<input type='text' class='form-control' name='idadeCliente' id='idadeCliente' placeholder='' value='$idadeCliente'>";
+                        echo"</div>";
+                      echo"</div>";
+                      echo"";
                       echo"<input type='hidden' class='form-control' name='statusPagamento' id='statusPagamento' placeholder='statusPagamento'  onchange='calculoPagamentoCliente()'>";
                       echo"<input type='hidden' class='form-control' name='idadeCliente' id='idadeCliente' placeholder='idadeCliente'  value='".$rowIdCliente ['idadeCliente'] . "'>";
                       echo"<div class='form-group row'>";

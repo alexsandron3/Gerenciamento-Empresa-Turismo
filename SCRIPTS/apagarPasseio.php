@@ -1,43 +1,44 @@
 <?php
-session_start();
-include_once("../PHP/conexao.php");
-$id= filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-if(!empty($id)){
+    //VERIFICACAO DE SESSOES E INCLUDES NECESSARIOS E CONEXAO AO BANCO DE DADOS
+    include_once("../includes/header.php");
+    
+    //RECEBENDO E VALIDANDO VALORES
+    $nomePasseio = filter_input(INPUT_GET , 'nomePasseio', FILTER_SANITIZE_STRING);
+    $dataPasseio = filter_input(INPUT_GET , 'dataPasseio', FILTER_SANITIZE_STRING);
+    $idPasseio   = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    $idUser      = $_SESSION['id'];
+    
+    //VERFICANDO SE O ID FOI ENVIADO
+    if(!empty($idPasseio)){
 
-    /* -----------------------------------------------------------------------------------------------------  */
-    $verificaSeExistePagamento = "SELECT * FROM pagamento_passeio WHERE idPasseio='$id'";
-    $resultadoVerificaSeExistePagamento =mysqli_query($conexao, $verificaSeExistePagamento);
-    /* -----------------------------------------------------------------------------------------------------  */
+        //VERIFICANDO SE EXISTEM PAGAMENTOS NO PASSEIO
+        $queryVerificaSeExistePagamamento           = "SELECT idPagamento FROM pagamento_passeio WHERE idPasseio =$idPasseio";
+        $executaQueryVerificaSeExistePagamamento    = mysqli_query($conexao, $queryVerificaSeExistePagamamento);
+        $quantidadePagamentoExistentes              = mysqli_num_rows($executaQueryVerificaSeExistePagamamento);
+        
 
+        //DELETANDO UM PASSEIO E DESPESAS
+        if($quantidadePagamentoExistentes == 0){
+            $queryDeletaDespesa = "DELETE FROM despesa WHERE idPasseio ='$idPasseio'";
+            $executaQueryDeletaDespesa = mysqli_query ($conexao, $queryDeletaDespesa);
 
-    if(mysqli_num_rows($resultadoVerificaSeExistePagamento) == 0){
-    /* -----------------------------------------------------------------------------------------------------  */
-        $getDataPasseio = "DELETE FROM passeio WHERE idPasseio ='$id'";
-        $inserDataPasseio = mysqli_query ($conexao, $getDataPasseio );
-    /* -----------------------------------------------------------------------------------------------------  */
-        
-        if(mysqli_affected_rows($conexao)){
-    /* -----------------------------------------------------------------------------------------------------  */
-            $getDataDespesa = "DELETE FROM despesa WHERE idPasseio ='$id'";
-            $inserDataDespesa = mysqli_query ($conexao, $getDataDespesa );
-    /* -----------------------------------------------------------------------------------------------------  */
-            $_SESSION['msg'] = "<p class='h5 text-center alert-success'>Passeio APAGADO com sucesso</p>";
-            header("refresh:0.5; url=../index.php");
-            
-        
-        }else {
-            $_SESSION['msg'] = "<p class='h5 text-center alert-danger'>Passeio NÃO foi APAGADO </p>";
-            header("refresh:0.5; url= index.php");
-        
+            $queryDeletaPasseio = "DELETE FROM passeio WHERE idPasseio ='$idPasseio'";
+            $executaQueryDeletaPasseio = mysqli_query ($conexao, $queryDeletaPasseio);
+            if(mysqli_affected_rows($conexao)){
+                $_SESSION['msg'] = "<p class='h5 text-center alert-success'>Passeio APAGADO com sucesso</p>";
+                header("refresh:0.5; url=../pesquisarPasseio.php");
+            }else{
+                $_SESSION['msg'] = "<p class='h5 text-center alert-danger'>Passeio NÃO foi APAGADO </p>";
+                header("refresh:0.5; url= ../pesquisarPasseio.php");
+            }
+            gerarLog("DELETAR PASSEIO", $conexao, $idUser, null, $nomePasseio, $dataPasseio, null, null , 0);
+        }else{
+            $_SESSION['msg'] = "<p class='h5 text-center alert-danger'>RESOLVA OS PAGAMENTOS FEITOS NESSE PASSEIO ANTES DE DELETAR</p>";
+            header("refresh:0.5; url=../pesquisarPasseio.php");
+            gerarLog("DELETAR PASSEIO", $conexao, $idUser, null, $nomePasseio, $dataPasseio, null, null , 1);
         }
-    }else{
-        $_SESSION['msg'] = "<p class='h5 text-center alert-warning''>Necessário remover PAGAMENTOS existentes </p>";
-        header("refresh:0.5; url=../pesquisarPasseio.php");
-    }
-}else {
-    $_SESSION['msg'] = "<p class='h5 text-center alert-warning''>Necessário selecionar um Passeio</p>";
-    header("refresh:0.5; url=../pesquisarPasseio.php");
 
-}
+
+    }
 
 ?>
